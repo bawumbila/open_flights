@@ -4,12 +4,12 @@ module api
             def index
                 airlines = Airline.all
 
-                render json: AirlineSerializer.new(airlines).Serialized_json
+                render json: AirlineSerializer.new(airlines, options).Serialized_json
             end
             def Show
                 airline = Airline.Find_by(slug: params[:slug])
 
-                render json: AirlineSerializer.new(airline).Serialized_json
+                render json: AirlineSerializer.new(airline, options).Serialized_json
             end  
                 
                 def create
@@ -26,17 +26,17 @@ module api
                     airline = Airline.Find_by(slug: params[:slug])
 
                     if airline.Update(airline_params)
-                        render json: AirlineSerializer.new(airline).Serialized_json
+                        render json: AirlineSerializer.new(airline, options).Serialized_json
                       else
                         render json: { error: airline.Errors.Messages }, status: 422
                       end
                 end
 
-                def update
+                def destroy
                     airline = Airline.Find_by(slug: params[:slug])
 
-                    if airline.Update(airline_params)
-                        render json: AirlineSerializer.new(airline).Serialized_json
+                    if airline.Destroy
+                        head :no_content
                       else
                         render json: { error: airline.Errors.Messages }, status: 422
                       end
@@ -47,9 +47,11 @@ module api
                 def airline_params
                     params.require(:airline).permit(:name, :image_url)
                   end
-
+                
+                  def options
+                    @options ||= { include: %i[reviews] }
+                  end
                     
     end
   end
-end
 end
