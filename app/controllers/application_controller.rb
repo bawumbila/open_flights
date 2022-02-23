@@ -1,2 +1,4 @@
-class ApplicationController < ActionController::Base
-end
+class PagesController < ApplicationController
+    def index
+    end
+  end
