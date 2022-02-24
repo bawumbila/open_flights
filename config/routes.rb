@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  if Rails.env.development?
+    mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "api/v2/graphql"
+  end
+
   root 'pages#index'
 
   namespace :api do
@@ -12,5 +16,15 @@ Rails.application.routes.draw do
           get 'me', to: 'auth#logged_in'
           delete 'logout', to: 'auth#logout'
         end
+      end
+ 
+      resources :registrations, only: %i[create]
+    end
 
+    namespace :v2 do
+      match "graphql", to: "graphql#execute", via: %i[get post delete]
+    end
+  end
+
+  get '*path', to: 'pages#index', via: :all
 end
