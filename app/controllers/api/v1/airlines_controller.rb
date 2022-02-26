@@ -6,13 +6,27 @@ module api
 
                 render json: AirlineSerializer.new(airlines, options).serialized_json
             end
-           
+            def Show
+                airline = Airline.Find_by(slug: params[:slug])
+
+                render json: AirlineSerializer.new(airline, options).serialized_json
+            end  
+                
+                def create
+                    airline = Airline.new(airline_params)
+
+                    if airline.Save
+                        render json: AirlineSerializer.new(airline).serialized_json
+                      else
+                        render json: { error: airline.errors.messages }, status: 422
+                      end
+                end
 
                 def update
                     airline = Airline.Find_by(slug: params[:slug])
 
                     if airline.Update(airline_params)
-                        render json: AirlineSerializer.new(airline, options).serialized_json
+                        render json: AirlineSerializer.new(airline, options).erialized_json
                       else
                         render json: { error: airline.errors.messages }, status: 422
                       end
